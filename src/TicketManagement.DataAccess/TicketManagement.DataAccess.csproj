@@ -42,6 +42,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="Entities\AreaEntity.cs" />
+    <Compile Include="Entities\EventAreaEntity.cs" />
+    <Compile Include="Entities\EventEntity.cs" />
+    <Compile Include="Entities\EventSeatEntity.cs" />
+    <Compile Include="Entities\LayoutEntity.cs" />
+    <Compile Include="Entities\SeatEntity.cs" />
+    <Compile Include="Entities\VenueEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
