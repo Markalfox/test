@@ -49,7 +49,15 @@
     <Compile Include="Entities\LayoutEntity.cs" />
     <Compile Include="Entities\SeatEntity.cs" />
     <Compile Include="Entities\VenueEntity.cs" />
+    <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\SqlRepository\SqlEventSeatRepository.cs" />
+    <Compile Include="Repositories\SqlRepository\SqlAreaRepository.cs" />
+    <Compile Include="Repositories\SqlRepository\SqlEventAreaRepository.cs" />
+    <Compile Include="Repositories\SqlRepository\SqlEventRepository.cs" />
+    <Compile Include="Repositories\SqlRepository\SqlLayoutRepository.cs" />
+    <Compile Include="Repositories\SqlRepository\SqlSeatRepository.cs" />
+    <Compile Include="Repositories\SqlRepository\SqlVenueRepository.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
