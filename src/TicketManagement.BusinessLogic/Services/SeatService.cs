@@ -26,17 +26,11 @@ namespace Ticketmanagement.BusinessLogic.Services
             {
                 throw new ArgumentNullException(nameof(item));
             }
-            else
-            {
-                if (item.Number < 0 || item.Row < 0)
-                {
-                    var exception = new Exception("The number or row cannot be negative");
-                    throw exception;
-                }
-            }
 
+            SeatServiceValidation.CheckNumber(item);
             SeatServiceValidation.CheckNumber(GetAllElements().Where(x => x.AreaId == item.AreaId), item);
             SeatServiceValidation.CheckRow(GetAllElements().Where(x => x.AreaId == item.AreaId), item);
+            SeatServiceValidation.CheckRow(item);
 
             _seatRepository.Create(Mapping().Map<SeatDto, SeatEntity>(item));
         }
