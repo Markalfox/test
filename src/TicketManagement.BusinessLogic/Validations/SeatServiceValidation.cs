@@ -16,12 +16,44 @@ namespace Ticketmanagement.BusinessLogic.Validations
             }
         }
 
+        public static void CheckRow(SeatDto item)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                if (item.Row < 0)
+                {
+                    var exception = new Exception("The row cannot be negative");
+                    throw exception;
+                }
+            }
+        }
+
         public static void CheckNumber(IEnumerable<SeatDto> seats, SeatDto item)
         {
             if (seats.Any(x => x.Number == item.Number))
             {
                 Exception exception = new Exception("This number is already in the current row");
                 throw exception;
+            }
+        }
+
+        public static void CheckNumber(SeatDto item)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                if (item.Number < 0)
+                {
+                    var exception = new Exception("The number cannot be negative");
+                    throw exception;
+                }
             }
         }
 
