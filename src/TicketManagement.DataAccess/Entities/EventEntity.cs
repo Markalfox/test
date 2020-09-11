@@ -1,4 +1,6 @@
-﻿namespace TicketManagement.DataAccess.Entities
+﻿using System;
+
+namespace TicketManagement.DataAccess.Entities
 {
     public class EventEntity
     {
@@ -9,5 +11,9 @@
         public string Description { get; set; }
 
         public int LayoutId { get; set; }
+
+        public DateTime StartDate { get; set; }
+
+        public DateTime EndDate { get; set; }
     }
 }
