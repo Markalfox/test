@@ -41,13 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data Transfer Objects\AreaDto.cs" />
-    <Compile Include="Data Transfer Objects\EventAreaDto.cs" />
-    <Compile Include="Data Transfer Objects\EventDto.cs" />
-    <Compile Include="Data Transfer Objects\EventSeatDto.cs" />
-    <Compile Include="Data Transfer Objects\LayoutDto.cs" />
-    <Compile Include="Data Transfer Objects\SeatDto.cs" />
-    <Compile Include="Data Transfer Objects\VenueDto.cs" />
+    <Compile Include="DataTransferObjects\AreaDto.cs" />
+    <Compile Include="DataTransferObjects\EventAreaDto.cs" />
+    <Compile Include="DataTransferObjects\EventDto.cs" />
+    <Compile Include="DataTransferObjects\EventSeatDto.cs" />
+    <Compile Include="DataTransferObjects\LayoutDto.cs" />
+    <Compile Include="DataTransferObjects\SeatDto.cs" />
+    <Compile Include="DataTransferObjects\VenueDto.cs" />
     <Compile Include="Interfaces\ICrud.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\AreaService.cs" />
