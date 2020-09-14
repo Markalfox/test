@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.DataAccess.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -48,34 +49,38 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
         public AreaEntity GetById(int id)
         {
-            string query = "SELECT * FROM [Area] " +
-                           "WHERE [Id] = @id";
+            AreaEntity result = null;
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                AreaEntity result = null;
-
-                while (reader.Read())
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    result = new AreaEntity
+                    command.CommandText = "SELECT * FROM [Venue] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        Id = reader.GetInt32(0),
-                        LayoutId = reader.GetInt32(1),
-                        Description = reader.GetString(2),
-                        CoordX = reader.GetInt32(3),
-                        CoordY = reader.GetInt32(4),
-                    };
+                        result = new AreaEntity
+                        {
+                            Id = reader.GetInt32(0),
+                            LayoutId = reader.GetInt32(1),
+                            Description = reader.GetString(2),
+                            CoordX = reader.GetInt32(3),
+                            CoordY = reader.GetInt32(4),
+                        };
+                    }
                 }
-
-                command.Dispose();
-
-                return result;
             }
+
+            return result;
         }
 
         public void Create(AreaEntity item)
@@ -86,16 +91,27 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
             }
             else
             {
-                string query = "INSERT INTO [Area] ([Id], [LayoutId], [Description], [CoordX], [CoordY]) " +
-                               "VALUES ('@item.Id', '@item.LayoutId', '@item.Description', '@item.CoordX', '@item.CoordY')";
-
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "INSERT INTO [Area] VALUES (@layoutId, @description, @coordX, @coordY)";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
+
+                        command.Parameters["@layoutId"].Value = item.LayoutId;
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@coordX"].Value = item.CoordX;
+                        command.Parameters["@coordY"].Value = item.CoordY;
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
@@ -108,33 +124,48 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
             }
             else
             {
-                string query = "UPDATE [Area] " +
-                               "SET [LayoutId] = @item.LayoutId, [Description] = @item.Description, [CoordX] = @item.CoordX, [CoordY] = @item.CoordY " +
-                               "WHERE [Id] = @item.Id";
-
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "UPDATE [Area] SET [LayoutId] = @layoutId, [Description] = @description, [CoordX] = @coordX, [CoordY] = @coordY WHERE [Id] = @id";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
+
+                        command.Parameters["@layoutId"].Value = item.LayoutId;
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@coordX"].Value = item.CoordX;
+                        command.Parameters["@coordY"].Value = item.CoordY;
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
 
         public void Delete(int id)
         {
-            string query = "DELETE FROM [Area] " +
-                           "WHERE [Id] = @id";
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM [Area] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
