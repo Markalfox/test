@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.DataAccess.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -17,31 +19,52 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
         // METHODS
         public void Create(VenueEntity item)
         {
-            string query = "INSERT INTO [Venue] ([Id], [Description], [Address], [Phone]) " +
-                           "VALUES (@item.Id, @item.Description, @item.Address, @item.Phone)";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            if (item == null)
             {
-                connection.Open();
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "INSERT INTO [Vanue] VALUES (@description, @address, @phone)";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@address", SqlDbType.NVarChar, 50));
+                        command.Parameters.Add(new SqlParameter("@phone", SqlDbType.NVarChar, 20));
+
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@address"].Value = item.Address;
+                        command.Parameters["@phone"].Value = item.Phone;
+
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
 
         public void Delete(int id)
         {
-            string query = "DELETE FROM [Venue] " +
-                           "WHERE [Id] = @id";
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM [Venue] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -74,48 +97,69 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
         public VenueEntity GetById(int id)
         {
-            string query = "SELECT * FROM [Venue] " +
-                           "WHERE [Id] = @id";
+            VenueEntity result = null;
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                VenueEntity result = null;
-
-                while (reader.Read())
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    result = new VenueEntity
+                    command.CommandText = "SELECT * FROM [Venue] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        Id = reader.GetInt32(0),
-                        Description = reader.GetString(1),
-                        Address = reader.GetString(2),
-                        Phone = reader.GetString(3),
-                    };
+                        result = new VenueEntity
+                        {
+                            Id = reader.GetInt32(0),
+                            Description = reader.GetString(1),
+                            Address = reader.GetString(2),
+                            Phone = reader.GetString(3),
+                        };
+                    }
                 }
-
-                command.Dispose();
-
-                return result;
             }
+
+            return result;
         }
 
         public void Update(VenueEntity item)
         {
-            string query = "UPDATE [Venue] " +
-                           "SET [Description] = @item.Description, [Address] = @item.Address, [Phone] = @item.Phone " +
-                           "WHERE [Id] = @item.Id";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            if (item == null)
             {
-                connection.Open();
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "UPDATE [Venue] SET [Description] = @description, [Address] = @address, [Phone] = @phone WHERE [Id] = @id";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@address", SqlDbType.NVarChar, 50));
+                        command.Parameters.Add(new SqlParameter("@phone", SqlDbType.NVarChar, 20));
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@address"].Value = item.Address;
+                        command.Parameters["@phone"].Value = item.Phone;
+                        command.Parameters["@id"].Value = item.Id;
+
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
     }
