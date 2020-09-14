@@ -140,22 +140,37 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
         public void Update(EventEntity item)
         {
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            if (item == null)
             {
-                connection.Open();
-
-                using (SqlCommand command = connection.CreateCommand())
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
-                    command.CommandText = "UPDATE [Event] SET [Name] = @name, [Description] = @description, [LayoutId] = @layoutId, [StartDate] = @startDate, [EndDate] = @endDate WHERE [Id] = @id";
-                    command.CommandType = CommandType.Text;
+                    connection.Open();
 
-                    command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
-                    command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                    command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
-                    command.Parameters.Add(new SqlParameter("@startDate", SqlDbType.DateTime));
-                    command.Parameters.Add(new SqlParameter("@endDate", SqlDbType.DateTime));
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "UPDATE [Event] " +
+                                              "SET [Name] = @name, [Description] = @description, [LayoutId] = @layoutId, [StartDate] = @startDate, [EndDate] = @endDate " +
+                                              "WHERE [Id] = @id";
+                        command.CommandType = CommandType.Text;
 
-                    command.ExecuteNonQuery();
+                        command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@startDate", SqlDbType.DateTime));
+                        command.Parameters.Add(new SqlParameter("@endDate", SqlDbType.DateTime));
+
+                        command.Parameters["@name"].Value = item.Name;
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@layoutId"].Value = item.LayoutId;
+                        command.Parameters["@startDate"].Value = item.StartDate;
+                        command.Parameters["@endDate"].Value = item.EndDate;
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
