@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.DataAccess.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -24,32 +25,46 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
             }
             else
             {
-                string query = "INSERT INTO [Seat] ([Id], [AreaId], [Row], [Number]) " +
-                               "VALUES (@item.Id, @item.AreaId, @item.Row, @item.Number)";
-
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "INSERT INTO [Seat] VALUES (@areaId, @row, @number)";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@areaId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@row", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("number", SqlDbType.Int));
+
+                        command.Parameters["@areaId"].Value = item.AreaId;
+                        command.Parameters["@row"].Value = item.Row;
+                        command.Parameters["@number"].Value = item.Number;
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
 
         public void Delete(int id)
         {
-            string query = "DELETE FROM [Seat] " +
-                           "WHERE [Id] = @id";
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DELETE * FROM [Seat] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -82,48 +97,67 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
         public SeatEntity GetById(int id)
         {
-            string query = "SELECT * FROM [Seat] " +
-                           "WHERE [Id] = @id";
+            SeatEntity result = null;
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                SeatEntity result = null;
-
-                while (reader.Read())
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    result = new SeatEntity
+                    command.CommandText = "SELECT * FROM [Seat] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        Id = reader.GetInt32(0),
-                        AreaId = reader.GetInt32(1),
-                        Row = reader.GetInt32(2),
-                        Number = reader.GetInt32(3),
-                    };
+                        result = new SeatEntity
+                        {
+                            Id = reader.GetInt32(0),
+                            AreaId = reader.GetInt32(1),
+                            Row = reader.GetInt32(2),
+                            Number = reader.GetInt32(3),
+                        };
+                    }
                 }
-
-                command.Dispose();
-
-                return result;
             }
+
+            return result;
         }
 
         public void Update(SeatEntity item)
         {
-            string query = "UPDATE [Seat] " +
-                           "SET [AreaId] = @item.AreaId, [Row] = @item.Row, [Number] = @item.Row " +
-                           "WHERE [Id] = @item.Id";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            if (item == null)
             {
-                connection.Open();
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "UPDATE [Seat] SET [AreaId] = @areaId, [Row] = @row, [Number] = @number WHERE [Id] = @id";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@areaId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@row", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("number", SqlDbType.Int));
+
+                        command.Parameters["areaId"].Value = item.AreaId;
+                        command.Parameters["row"].Value = item.Row;
+                        command.Parameters["number"].Value = item.Number;
+
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
     }
