@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.DataAccess.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -24,32 +25,50 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
             }
             else
             {
-                string query = "INSERT INTO [Event] ([Id], [Name], [Description], [LayoutId]) " +
-                               "VALUES (@item.Id, @item.Name, @item.Description, @item.LayoutId)";
-
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "INSERT INTO [Event] VALUES (@name, @description, @layoutId, @startDate, @endDate)";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
+                        command.Parameters.Add("@startDate", SqlDbType.DateTime);
+                        command.Parameters.Add("@endDate", SqlDbType.DateTime);
+
+                        command.Parameters["@name"].Value = item.Name;
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@layoutId"].Value = item.LayoutId;
+                        command.Parameters["@startDate"].Value = item.StartDate;
+                        command.Parameters["@endDate"].Value = item.EndDate;
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
 
         public void Delete(int id)
         {
-            string query = "DELETE FROM [Event] " +
-                           "WHERE [Id] = @id";
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DELETE * FROM [Event] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -71,6 +90,8 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         Name = reader.GetString(1),
                         Description = reader.GetString(2),
                         LayoutId = reader.GetInt32(3),
+                        StartDate = reader.GetDateTime(4),
+                        EndDate = reader.GetDateTime(5),
                     });
                 }
 
@@ -82,48 +103,60 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
         public EventEntity GetById(int id)
         {
-            string query = "SELECT * FROM [Event] " +
-                           "WHERE [Id] = @id";
+            EventEntity result = null;
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                EventEntity result = null;
-
-                while (reader.Read())
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    result = new EventEntity
+                    command.CommandText = "SELECT * FROM [Event] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        Id = reader.GetInt32(0),
-                        Name = reader.GetString(1),
-                        Description = reader.GetString(2),
-                        LayoutId = reader.GetInt32(3),
-                    };
+                        result = new EventEntity
+                        {
+                            Id = reader.GetInt32(0),
+                            Name = reader.GetString(1),
+                            Description = reader.GetString(2),
+                            LayoutId = reader.GetInt32(3),
+                            StartDate = reader.GetDateTime(4),
+                            EndDate = reader.GetDateTime(5),
+                        };
+                    }
                 }
-
-                command.Dispose();
-
-                return result;
             }
+
+            return result;
         }
 
         public void Update(EventEntity item)
         {
-            string query = "UPDATE [Event] " +
-                           "SET [Name] = @item.Name, [Description] = @item.Description, [LayoutId] = @item.LayoutId " +
-                           "WHERE [Id] = @item.Id";
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "UPDATE [Event] SET [Name] = @name, [Description] = @description, [LayoutId] = @layoutId, [StartDate] = @startDate, [EndDate] = @endDate WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
+                    command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                    command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
+                    command.Parameters.Add(new SqlParameter("@startDate", SqlDbType.DateTime));
+                    command.Parameters.Add(new SqlParameter("@endDate", SqlDbType.DateTime));
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
     }
