@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.DataAccess.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -24,32 +25,44 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
             }
             else
             {
-                string query = "INSERT INTO [Layout] ([Id], [VenueId], [Description]) " +
-                               "VALUES (@item.Id, @item.VenueId, @item.Description)";
-
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "INSETR INTO [Layout] VALUES (@venueId, @description)";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@venueId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+
+                        command.Parameters["@venueId"].Value = item.VenueId;
+                        command.Parameters["@description"].Value = item.Description;
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
 
         public void Delete(int id)
         {
-            string query = "DELETE FROM [Layout] " +
-                           "WHERE [Id] = @id";
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DELETE * FROM [Layout] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -81,47 +94,64 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
         public LayoutEntity GetById(int id)
         {
-            string query = "SELECT * FROM [Layout] " +
-                           "WHERE [Id] = @id";
+            LayoutEntity result = null;
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                LayoutEntity result = null;
-
-                while (reader.Read())
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    result = new LayoutEntity
+                    command.CommandText = "SELECT * FROM [Layout] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        Id = reader.GetInt32(0),
-                        VenueId = reader.GetInt32(1),
-                        Description = reader.GetString(2),
-                    };
+                        result = new LayoutEntity
+                        {
+                            Id = reader.GetInt32(0),
+                            VenueId = reader.GetInt32(1),
+                            Description = reader.GetString(2),
+                        };
+                    }
                 }
-
-                command.Dispose();
-
-                return result;
             }
+
+            return result;
         }
 
         public void Update(LayoutEntity item)
         {
-            string query = "UPDATE [Layout] " +
-                           "SET [VenueId] = @item.VenueId, [Description] = @item.Description " +
-                           "WHERE [Id] = @item.Id";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            if (item == null)
             {
-                connection.Open();
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "UPDATE [Layout] SET [VenueId] = @venueId, [Description] = @description WHERE [Id] = @id";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@venueId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+
+                        command.Parameters["@venueId"].Value = item.VenueId;
+                        command.Parameters["@description"].Value = item.Description;
+
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
     }
