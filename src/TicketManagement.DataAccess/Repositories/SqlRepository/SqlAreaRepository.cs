@@ -57,7 +57,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM [Venue] WHERE [Id] = @id";
+                    command.CommandText = "SELECT * FROM [Area] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
                     command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
