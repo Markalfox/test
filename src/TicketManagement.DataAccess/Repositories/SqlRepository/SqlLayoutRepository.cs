@@ -145,9 +145,11 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
                         command.Parameters.Add(new SqlParameter("@venueId", SqlDbType.Int));
                         command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
 
                         command.Parameters["@venueId"].Value = item.VenueId;
                         command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@id"].Value = item.Id;
 
                         command.ExecuteNonQuery();
                     }
