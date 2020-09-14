@@ -31,7 +31,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
                     using (SqlCommand command = connection.CreateCommand())
                     {
-                        command.CommandText = "INSERT INTO [Vanue] VALUES (@description, @address, @phone)";
+                        command.CommandText = "INSERT INTO [Venue] VALUES (@description, @address, @phone)";
                         command.CommandType = CommandType.Text;
 
                         command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
