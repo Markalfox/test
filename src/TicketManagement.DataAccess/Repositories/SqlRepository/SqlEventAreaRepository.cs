@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using TicketManagement.DataAccess.Entities;
 using TicketManagement.DataAccess.Interfaces;
@@ -24,32 +25,50 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
             }
             else
             {
-                string query = "INSERT INTO [EventArea] ([Id], [EventId], [Description], [CoordX], [CoordY], [Price]) " +
-                               "VALUES (@item.Id, @item.EventId, @item.Description, @item.CoordX, @item.CoordY, @item.Price)";
-
                 using (SqlConnection connection = new SqlConnection(_connectionString))
                 {
                     connection.Open();
 
-                    SqlCommand command = new SqlCommand(query, connection);
-                    command.ExecuteNonQuery();
-                    command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "INSERT INTO [EventArea] VALUES (@eventId, @description, @coordX, @coordY, @price)";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@eventId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@price", SqlDbType.Decimal));
+
+                        command.Parameters["@layoutId"].Value = item.EventId;
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@coordX"].Value = item.CoordX;
+                        command.Parameters["@coordY"].Value = item.CoordY;
+                        command.Parameters["@price"].Value = item.Price;
+
+                        command.ExecuteNonQuery();
+                    }
                 }
             }
         }
 
         public void Delete(int id)
         {
-            string query = "DELETE FROM [EventArea] " +
-                           "WHERE [Id] = @id";
-
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM [EventArea] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    command.ExecuteNonQuery();
+                }
             }
         }
 
@@ -86,50 +105,73 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
 
         public EventAreaEntity GetById(int id)
         {
-            string query = "SELECT * FROM [EventArea] " +
-                           "WHERE [Id] = @id";
+            EventAreaEntity result = null;
 
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                SqlDataReader reader = command.ExecuteReader();
-
-                EventAreaEntity result = null;
-
-                while (reader.Read())
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    result = new EventAreaEntity
+                    command.CommandText = "SELECT * FROM [EventArea] WHERE [Id] = @id";
+                    command.CommandType = CommandType.Text;
+
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
+
+                    command.Parameters["@id"].Value = id;
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
                     {
-                        Id = reader.GetInt32(0),
-                        EventId = reader.GetInt32(1),
-                        Description = reader.GetString(2),
-                        CoordX = reader.GetInt32(3),
-                        CoordY = reader.GetInt32(4),
-                        Price = reader.GetDecimal(5),
-                    };
+                        result = new EventAreaEntity
+                        {
+                            Id = reader.GetInt32(0),
+                            EventId = reader.GetInt32(1),
+                            Description = reader.GetString(2),
+                            CoordX = reader.GetInt32(3),
+                            CoordY = reader.GetInt32(4),
+                            Price = reader.GetDecimal(5),
+                        };
+                    }
                 }
-
-                command.Dispose();
-
-                return result;
             }
+
+            return result;
         }
 
         public void Update(EventAreaEntity item)
         {
-            string query = "UPDATE [EventArea] " +
-                           "SET [EventId] = @item.EventId, [Description] = @item.Description, [CoordX] = @item.CoordX, [CoordY] = @item.CoordY, [Price] = @item.Price " +
-                           "WHERE [Id] = @item.Id";
-
-            using (SqlConnection connection = new SqlConnection(_connectionString))
+            if (item == null)
             {
-                connection.Open();
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                using (SqlConnection connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
 
-                SqlCommand command = new SqlCommand(query, connection);
-                command.ExecuteNonQuery();
-                command.Dispose();
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = "UPDATE [EventArea] SET [EventId] = @eventId, [Description] = @description, [CoordX] = @coordX, [CoordY] = @coordY, [Price] = @price WHERE [Id] = @id";
+                        command.CommandType = CommandType.Text;
+
+                        command.Parameters.Add(new SqlParameter("@eventId", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
+                        command.Parameters.Add(new SqlParameter("@price", SqlDbType.Decimal));
+
+                        command.Parameters["@layoutId"].Value = item.EventId;
+                        command.Parameters["@description"].Value = item.Description;
+                        command.Parameters["@coordX"].Value = item.CoordX;
+                        command.Parameters["@coordY"].Value = item.CoordY;
+                        command.Parameters["@price"].Value = item.Price;
+
+                        command.ExecuteNonQuery();
+                    }
+                }
             }
         }
     }
