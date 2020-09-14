@@ -162,12 +162,14 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
                         command.Parameters.Add(new SqlParameter("@startDate", SqlDbType.DateTime));
                         command.Parameters.Add(new SqlParameter("@endDate", SqlDbType.DateTime));
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
 
                         command.Parameters["@name"].Value = item.Name;
                         command.Parameters["@description"].Value = item.Description;
                         command.Parameters["@layoutId"].Value = item.LayoutId;
                         command.Parameters["@startDate"].Value = item.StartDate;
                         command.Parameters["@endDate"].Value = item.EndDate;
+                        command.Parameters["@id"].Value = item.Id;
 
                         command.ExecuteNonQuery();
                     }
