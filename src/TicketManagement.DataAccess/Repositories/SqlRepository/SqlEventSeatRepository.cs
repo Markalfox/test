@@ -34,15 +34,10 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "INSERT INTO [EventSeat] VALUES (@eventAreaId, @row, @number, @state)";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@eventAreaId", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@row", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@number", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@state", SqlDbType.Int));
-
-                        command.Parameters["@eventAreaId"].Value = item.EventAreaId;
-                        command.Parameters["@row"].Value = item.Row;
-                        command.Parameters["@number"].Value = item.Number;
-                        command.Parameters["@state"].Value = item.State;
+                        command.Parameters.Add(new SqlParameter("@eventAreaId", SqlDbType.Int)).Value = item.EventAreaId;
+                        command.Parameters.Add(new SqlParameter("@row", SqlDbType.Int)).Value = item.Row;
+                        command.Parameters.Add(new SqlParameter("@number", SqlDbType.Int)).Value = item.Number;
+                        command.Parameters.Add(new SqlParameter("@state", SqlDbType.Int)).Value = item.State;
 
                         command.ExecuteNonQuery();
                     }
@@ -61,9 +56,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "DELETE * FROM [EventSeat] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     command.ExecuteNonQuery();
                 }
@@ -111,9 +104,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "SELECT * FROM [EventSeat] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -151,17 +142,11 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "UPDATE [EventSeat] SET [EventAreaId] = @eventAreaId, [Row] = @row, [Number] = @number, [State] = @state";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@eventAreaId", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@row", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@number", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@state", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                        command.Parameters["@eventAreaId"].Value = item.EventAreaId;
-                        command.Parameters["@row"].Value = item.Row;
-                        command.Parameters["@number"].Value = item.Number;
-                        command.Parameters["@state"].Value = item.State;
-                        command.Parameters["@id"].Value = item.Id;
+                        command.Parameters.Add(new SqlParameter("@eventAreaId", SqlDbType.Int)).Value = item.EventAreaId;
+                        command.Parameters.Add(new SqlParameter("@row", SqlDbType.Int)).Value = item.Row;
+                        command.Parameters.Add(new SqlParameter("@number", SqlDbType.Int)).Value = item.Number;
+                        command.Parameters.Add(new SqlParameter("@state", SqlDbType.Int)).Value = item.State;
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = item.Id;
 
                         command.ExecuteNonQuery();
                     }
