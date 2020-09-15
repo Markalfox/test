@@ -60,9 +60,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "SELECT * FROM [Area] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -100,15 +98,10 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "INSERT INTO [Area] VALUES (@layoutId, @description, @coordX, @coordY)";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
-
-                        command.Parameters["@layoutId"].Value = item.LayoutId;
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@coordX"].Value = item.CoordX;
-                        command.Parameters["@coordY"].Value = item.CoordY;
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int)).Value = item.LayoutId;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int)).Value = item.CoordX;
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int)).Value = item.CoordY;
 
                         command.ExecuteNonQuery();
                     }
@@ -133,17 +126,11 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "UPDATE [Area] SET [LayoutId] = @layoutId, [Description] = @description, [CoordX] = @coordX, [CoordY] = @coordY WHERE [Id] = @id";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                        command.Parameters["@layoutId"].Value = item.LayoutId;
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@coordX"].Value = item.CoordX;
-                        command.Parameters["@coordY"].Value = item.CoordY;
-                        command.Parameters["@id"].Value = item.Id;
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int)).Value = item.LayoutId;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int)).Value = item.CoordX;
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int)).Value = item.CoordY;
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = item.Id;
 
                         command.ExecuteNonQuery();
                     }
@@ -162,9 +149,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "DELETE FROM [Area] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     command.ExecuteNonQuery();
                 }
