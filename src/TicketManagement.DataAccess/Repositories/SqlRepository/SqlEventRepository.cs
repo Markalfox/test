@@ -34,17 +34,11 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "INSERT INTO [Event] VALUES (@name, @description, @layoutId, @startDate, @endDate)";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
-                        command.Parameters.Add("@startDate", SqlDbType.DateTime);
-                        command.Parameters.Add("@endDate", SqlDbType.DateTime);
-
-                        command.Parameters["@name"].Value = item.Name;
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@layoutId"].Value = item.LayoutId;
-                        command.Parameters["@startDate"].Value = item.StartDate;
-                        command.Parameters["@endDate"].Value = item.EndDate;
+                        command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50)).Value = item.Name;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int)).Value = item.LayoutId;
+                        command.Parameters.Add("@startDate", SqlDbType.DateTime).Value = item.StartDate;
+                        command.Parameters.Add("@endDate", SqlDbType.DateTime).Value = item.EndDate;
 
                         command.ExecuteNonQuery();
                     }
@@ -63,9 +57,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "DELETE * FROM [Event] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     command.ExecuteNonQuery();
                 }
@@ -114,9 +106,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "SELECT * FROM [Event] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -157,19 +147,12 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                                               "WHERE [Id] = @id";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50));
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@startDate", SqlDbType.DateTime));
-                        command.Parameters.Add(new SqlParameter("@endDate", SqlDbType.DateTime));
-                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                        command.Parameters["@name"].Value = item.Name;
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@layoutId"].Value = item.LayoutId;
-                        command.Parameters["@startDate"].Value = item.StartDate;
-                        command.Parameters["@endDate"].Value = item.EndDate;
-                        command.Parameters["@id"].Value = item.Id;
+                        command.Parameters.Add(new SqlParameter("@name", SqlDbType.NVarChar, 50)).Value = item.Name;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@layoutId", SqlDbType.Int)).Value = item.LayoutId;
+                        command.Parameters.Add(new SqlParameter("@startDate", SqlDbType.DateTime)).Value = item.StartDate;
+                        command.Parameters.Add(new SqlParameter("@endDate", SqlDbType.DateTime)).Value = item.EndDate;
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = item.Id;
 
                         command.ExecuteNonQuery();
                     }
