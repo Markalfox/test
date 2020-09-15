@@ -48,8 +48,6 @@ namespace Ticketmanagement.BusinessLogic.Validations
         }
 
         public static bool CheckNull(EventDto item)
-        {
-            return item == null;
-        }
+            => item == null;
     }
 }
