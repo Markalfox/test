@@ -34,17 +34,11 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "INSERT INTO [EventArea] VALUES (@eventId, @description, @coordX, @coordY, @price)";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@eventId", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@price", SqlDbType.Decimal));
-
-                        command.Parameters["@layoutId"].Value = item.EventId;
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@coordX"].Value = item.CoordX;
-                        command.Parameters["@coordY"].Value = item.CoordY;
-                        command.Parameters["@price"].Value = item.Price;
+                        command.Parameters.Add(new SqlParameter("@eventId", SqlDbType.Int)).Value = item.EventId;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int)).Value = item.CoordX;
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int)).Value = item.CoordY;
+                        command.Parameters.Add(new SqlParameter("@price", SqlDbType.Decimal)).Value = item.Price;
 
                         command.ExecuteNonQuery();
                     }
@@ -63,9 +57,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "DELETE FROM [EventArea] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     command.ExecuteNonQuery();
                 }
@@ -116,9 +108,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "SELECT * FROM [EventArea] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -157,19 +147,12 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "UPDATE [EventArea] SET [EventId] = @eventId, [Description] = @description, [CoordX] = @coordX, [CoordY] = @coordY, [Price] = @price WHERE [Id] = @id";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@eventId", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int));
-                        command.Parameters.Add(new SqlParameter("@price", SqlDbType.Decimal));
-                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                        command.Parameters["@layoutId"].Value = item.EventId;
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@coordX"].Value = item.CoordX;
-                        command.Parameters["@coordY"].Value = item.CoordY;
-                        command.Parameters["@price"].Value = item.Price;
-                        command.Parameters["@id"].Value = item.Id;
+                        command.Parameters.Add(new SqlParameter("@eventId", SqlDbType.Int)).Value = item.EventId;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@coordX", SqlDbType.Int)).Value = item.CoordX;
+                        command.Parameters.Add(new SqlParameter("@coordY", SqlDbType.Int)).Value = item.CoordY;
+                        command.Parameters.Add(new SqlParameter("@price", SqlDbType.Decimal)).Value = item.Price;
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = item.Id;
 
                         command.ExecuteNonQuery();
                     }
