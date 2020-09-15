@@ -34,13 +34,9 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "INSERT INTO [Venue] VALUES (@description, @address, @phone)";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@address", SqlDbType.NVarChar, 50));
-                        command.Parameters.Add(new SqlParameter("@phone", SqlDbType.NVarChar, 20));
-
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@address"].Value = item.Address;
-                        command.Parameters["@phone"].Value = item.Phone;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@address", SqlDbType.NVarChar, 50)).Value = item.Address;
+                        command.Parameters.Add(new SqlParameter("@phone", SqlDbType.NVarChar, 20)).Value = item.Phone;
 
                         command.ExecuteNonQuery();
                     }
@@ -59,9 +55,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "DELETE FROM [Venue] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     command.ExecuteNonQuery();
                 }
@@ -108,9 +102,7 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                     command.CommandText = "SELECT * FROM [Venue] WHERE [Id] = @id";
                     command.CommandType = CommandType.Text;
 
-                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                    command.Parameters["@id"].Value = id;
+                    command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = id;
 
                     SqlDataReader reader = command.ExecuteReader();
 
@@ -147,15 +139,10 @@ namespace TicketManagement.DataAccess.Repositories.SqlRepository
                         command.CommandText = "UPDATE [Venue] SET [Description] = @description, [Address] = @address, [Phone] = @phone WHERE [Id] = @id";
                         command.CommandType = CommandType.Text;
 
-                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200));
-                        command.Parameters.Add(new SqlParameter("@address", SqlDbType.NVarChar, 50));
-                        command.Parameters.Add(new SqlParameter("@phone", SqlDbType.NVarChar, 20));
-                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int));
-
-                        command.Parameters["@description"].Value = item.Description;
-                        command.Parameters["@address"].Value = item.Address;
-                        command.Parameters["@phone"].Value = item.Phone;
-                        command.Parameters["@id"].Value = item.Id;
+                        command.Parameters.Add(new SqlParameter("@description", SqlDbType.NVarChar, 200)).Value = item.Description;
+                        command.Parameters.Add(new SqlParameter("@address", SqlDbType.NVarChar, 50)).Value = item.Address;
+                        command.Parameters.Add(new SqlParameter("@phone", SqlDbType.NVarChar, 20)).Value = item.Phone;
+                        command.Parameters.Add(new SqlParameter("@id", SqlDbType.Int)).Value = item.Id;
 
                         command.ExecuteNonQuery();
                     }
