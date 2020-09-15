@@ -36,6 +36,7 @@ namespace Ticketmanagement.BusinessLogic.Services
             }
 
             EventServiceValidation.CheckName(GetAllElements(), item);
+            EventServiceValidation.CheckDescription(GetAllElements(), item);
             EventServiceValidation.CheckDate(GetAllElements().Where(x => x.LayoutId == item.LayoutId), item);
 
             _eventRepository.Create(Mapping().Map<EventDto, EventEntity>(item));
@@ -73,7 +74,7 @@ namespace Ticketmanagement.BusinessLogic.Services
 
         public void UpdateElement(EventDto item)
         {
-            if (!EventServiceValidation.CheckNull(item))
+            if (item != null)
             {
                 _eventRepository.Update(Mapping().Map<EventDto, EventEntity>(item));
             }

@@ -9,10 +9,51 @@ namespace Ticketmanagement.BusinessLogic.Validations
     {
         public static void CheckName(IEnumerable<EventDto> events, EventDto item)
         {
-            if (events.Any(x => x.Name == item.Name))
+            if (item == null)
             {
-                Exception exception = new Exception("An event with this name already exists");
-                throw exception;
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                if (events.Any(x => x.Name == item.Name))
+                {
+                    Exception exception = new Exception("An event with this name already exists");
+                    throw exception;
+                }
+
+                if (item.Name.Length < 2)
+                {
+                    Exception exception = new Exception("Name too short");
+                    throw exception;
+                }
+
+                if (IsDigits(item.Name))
+                {
+                    Exception exception = new Exception("The name contains invalid characters");
+                    throw exception;
+                }
+            }
+        }
+
+        public static void CheckDescription(IEnumerable<EventDto> events, EventDto item)
+        {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
+            else
+            {
+                if (item.Description.Length > 120)
+                {
+                    Exception exception = new Exception("Description too large");
+                    throw exception;
+                }
+
+                if (events.Any(x => x.Description == item.Description))
+                {
+                    Exception exception = new Exception("This description already exists");
+                    throw exception;
+                }
             }
         }
 
@@ -47,7 +88,17 @@ namespace Ticketmanagement.BusinessLogic.Validations
             return false;
         }
 
-        public static bool CheckNull(EventDto item)
-            => item == null;
+        private static bool IsDigits(string text)
+        {
+            foreach (var c in text)
+            {
+                if (char.IsDigit(c))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
